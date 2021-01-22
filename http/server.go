@@ -79,7 +79,7 @@ func (server *APIServer) StartUnsecured() error {
 		Addr:         listenAddr,
 		Handler:      h,
 		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 120 * time.Second,
+		WriteTimeout: 300 * time.Second,
 	}
 
 	return httpServer.ListenAndServe()
