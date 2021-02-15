@@ -68,7 +68,7 @@ type StackManager struct {
 func newStackManager(portainerURL, endpointID, edgeID string) (*StackManager, error) {
 	cli := client.NewPortainerClient(portainerURL, endpointID, edgeID)
 
-	dockerStackService, err := exec.NewDockerStackService(agent.DockerBinaryPath)
+	dockerStackService, err := exec.NewDockerSwarmStackService(agent.DockerBinaryPath)
 	if err != nil {
 		return nil, err
 	}
