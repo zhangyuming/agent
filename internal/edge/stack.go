@@ -1,13 +1,13 @@
 package edge
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"time"
 
-	"github.com/portainer/agent/exec"
-
 	"github.com/portainer/agent"
+	"github.com/portainer/agent/exec"
 	"github.com/portainer/agent/filesystem"
 	"github.com/portainer/agent/http/client"
 )
@@ -55,6 +55,7 @@ const (
 
 // StackManager represents a service for managing Edge stacks
 type StackManager struct {
+	isSwarm            *bool
 	stacks             map[edgeStackID]*edgeStack
 	stopSignal         chan struct{}
 	dockerStackService agent.DockerStackService
@@ -68,19 +69,21 @@ type StackManager struct {
 func newStackManager(portainerURL, endpointID, edgeID string) (*StackManager, error) {
 	cli := client.NewPortainerClient(portainerURL, endpointID, edgeID)
 
-	dockerStackService, err := exec.NewDockerSwarmStackService(agent.DockerBinaryPath)
-	if err != nil {
-		return nil, err
-	}
-
 	stackManager := &StackManager{
-		dockerStackService: dockerStackService,
-		stacks:             map[edgeStackID]*edgeStack{},
-		stopSignal:         nil,
-		httpClient:         cli,
+		stacks:     map[edgeStackID]*edgeStack{},
+		stopSignal: nil,
+		httpClient: cli,
 	}
 
 	return stackManager, nil
+}
+
+func buildDockerStackService(isSwarm bool) (agent.DockerStackService, error) {
+	if isSwarm {
+		return exec.NewDockerSwarmStackService(agent.DockerBinaryPath)
+	}
+
+	return nil, errors.New("Standalone is not supported")
 }
 
 func (manager *StackManager) updateStacksStatus(stacks map[int]int) error {
@@ -207,6 +210,27 @@ func (manager *StackManager) next() *edgeStack {
 			return stack
 		}
 	}
+	return nil
+}
+
+func (manager *StackManager) setEngineStatus(isSwarm bool) error {
+	if manager.isSwarm != nil && isSwarm == *manager.isSwarm {
+		return nil
+	}
+
+	manager.isSwarm = &isSwarm
+
+	err := manager.stop()
+	if err != nil {
+		return err
+	}
+
+	dockerStackService, err := buildDockerStackService(isSwarm)
+	if err != nil {
+		return err
+	}
+	manager.dockerStackService = dockerStackService
+
 	return nil
 }
 
