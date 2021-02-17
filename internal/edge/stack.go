@@ -1,7 +1,6 @@
 package edge
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -83,7 +82,7 @@ func buildDockerStackService(isSwarm bool) (agent.DockerStackService, error) {
 		return exec.NewDockerSwarmStackService(agent.DockerBinaryPath)
 	}
 
-	return nil, errors.New("Standalone is not supported")
+	return exec.NewDockerComposeStackService(agent.DockerBinaryPath)
 }
 
 func (manager *StackManager) updateStacksStatus(stacks map[int]int) error {
