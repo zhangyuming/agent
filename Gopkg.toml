@@ -93,3 +93,7 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  name = "github.com/portainer/docker-compose-wrapper"
+  revision = "fb78615516aadfc94a81121614e900d15b775ae6"
