@@ -77,14 +77,6 @@ func newStackManager(portainerURL, endpointID, edgeID string) (*StackManager, er
 	return stackManager, nil
 }
 
-func buildDockerStackService(isSwarm bool) (agent.DockerStackService, error) {
-	if isSwarm {
-		return exec.NewDockerSwarmStackService(agent.DockerBinaryPath)
-	}
-
-	return exec.NewDockerComposeStackService(agent.DockerBinaryPath)
-}
-
 func (manager *StackManager) updateStacksStatus(stacks map[int]int) error {
 	if !manager.isEnabled {
 		return nil
@@ -273,4 +265,12 @@ func (manager *StackManager) deleteStack(stack *edgeStack, stackName, stackFileL
 	}
 
 	delete(manager.stacks, stack.ID)
+}
+
+func buildDockerStackService(isSwarm bool) (agent.DockerStackService, error) {
+	if isSwarm {
+		return exec.NewDockerSwarmStackService(agent.DockerBinaryPath)
+	}
+
+	return exec.NewDockerComposeStackService(agent.DockerBinaryPath)
 }
