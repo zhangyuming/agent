@@ -1,27 +1,24 @@
 #!/usr/bin/env bash
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
 
 PLATFORM=${1:-"linux"}
-ARCH=${2:-"x86_64"}
+ARCH=${2:-"amd64"}
 
-DOCKER_VERSION_LINUX="19.03.13"
+DOCKER_VERSION="19.03.13"
 DOCKER_VERSION_WINDOWS="19-03-12"
+DOCKER_COMPOSE_VERSION="1.27.4"
+DOCKER_COMPOSE_VERSION_WINDOWS="1.28.0",
 
-DOWNLOAD_FOLDER=".tmp/download"
-
-rm -rf "${DOWNLOAD_FOLDER}"
-mkdir -pv "${DOWNLOAD_FOLDER}"
-
-echo "Downloading docker binaries for ${PLATFORM} ${ARCH}"
-
-if [ "${PLATFORM}" == 'win' ]; then
-  wget -O "${DOWNLOAD_FOLDER}/docker-binaries.zip" "https://dockermsft.azureedge.net/dockercontainer/docker-${DOCKER_VERSION_WINDOWS}.zip"
-  unzip "${DOWNLOAD_FOLDER}/docker-binaries.zip" -d "${DOWNLOAD_FOLDER}"
-  mv "${DOWNLOAD_FOLDER}/docker/docker.exe" dist/
-  mv ${DOWNLOAD_FOLDER}/docker/*.dll dist/
-else
-  wget -O "${DOWNLOAD_FOLDER}/docker-binaries.tgz" "https://download.docker.com/${PLATFORM}/static/stable/${ARCH}/docker-${DOCKER_VERSION_LINUX}.tgz"
-  tar -xf "${DOWNLOAD_FOLDER}/docker-binaries.tgz" -C "${DOWNLOAD_FOLDER}"
-  mv "${DOWNLOAD_FOLDER}/docker/docker" dist/
+if [[ "$PLATFORM" == "win" ]];
+then
+  DOCKER_VERSION=$DOCKER_VERSION_WINDOWS
+  DOCKER_COMPOSE_VERSION=$DOCKER_COMPOSE_VERSION_WINDOWS
 fi
 
-exit 0
+source ./build/linux/download_docker_binary.sh
+source ./build/linux/download_docker_compose_binary.sh
+
+download_docker_binary $PLATFORM $ARCH $DOCKER_VERSION
+download_docker_compose_binary $PLATFORM $ARCH $DOCKER_COMPOSE_VERSION
