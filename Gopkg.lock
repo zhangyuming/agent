@@ -387,11 +387,12 @@
   version = "v0.8.1"
 
 [[projects]]
+  branch = "main"
   digest = "1:c8875c11db75f84fd3eb60a8eaa2a3db3789970fb6a33f042af1449d73f6f15f"
   name = "github.com/portainer/docker-compose-wrapper"
   packages = ["."]
   pruneopts = "UT"
-  revision = "fb78615516aadfc94a81121614e900d15b775ae6"
+  revision = "03b2b09b0a1963e1f85292136229d4c6a0edee79"
 
 [[projects]]
   digest = "1:b7f5df80795af5e9be8b0edcf03452e9aca0f53481edfbd1365975680423f82f"
