@@ -13,12 +13,12 @@ DOCKER_COMPOSE_VERSION_WINDOWS="1.28.0",
 
 if [[ "$PLATFORM" == "win" ]];
 then
-  DOCKER_VERSION=$DOCKER_VERSION_WINDOWS
-  DOCKER_COMPOSE_VERSION=$DOCKER_COMPOSE_VERSION_WINDOWS
+    DOCKER_VERSION=$DOCKER_VERSION_WINDOWS
+    DOCKER_COMPOSE_VERSION=$DOCKER_COMPOSE_VERSION_WINDOWS
 fi
 
-source ./build/linux/download_docker_binary.sh
-source ./build/linux/download_docker_compose_binary.sh
+source ./build/download_docker_binary.sh
+source ./build/download_docker_compose_binary.sh
 
 download_docker_binary $PLATFORM $ARCH $DOCKER_VERSION
 download_docker_compose_binary $PLATFORM $ARCH $DOCKER_COMPOSE_VERSION
