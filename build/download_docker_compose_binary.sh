@@ -7,7 +7,7 @@ function download_docker_compose_binary(){
     echo "Downloading docker-compose binary for ${PLATFORM} ${ARCH}"
     
     
-    if [ "${PLATFORM}" == 'linux' ] && [ "${ARCH}" == 'amd64' ]; then
+    if [ "${PLATFORM}" == 'linux' ] && [[ ("${ARCH}" == 'amd64') || ("${ARCH}" == 'x86_64')  ]]; then
         wget -O "dist/docker-compose" "https://github.com/portainer/docker-compose-linux-amd64-static-binary/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose"
         chmod +x "dist/docker-compose"
         elif [ "${PLATFORM}" == 'mac' ]; then
