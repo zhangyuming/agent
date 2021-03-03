@@ -9,6 +9,8 @@ import (
 	"github.com/portainer/agent/exec"
 	"github.com/portainer/agent/filesystem"
 	"github.com/portainer/agent/http/client"
+	"github.com/portainer/agent/libcompose"
+	wrapper "github.com/portainer/docker-compose-wrapper"
 )
 
 type edgeStackID int
@@ -272,5 +274,13 @@ func buildDockerStackService(isSwarm bool) (agent.DockerStackService, error) {
 		return exec.NewDockerSwarmStackService(agent.DockerBinaryPath)
 	}
 
-	return exec.NewDockerComposeStackService(agent.DockerBinaryPath)
+	service, err := exec.NewDockerComposeStackService(agent.DockerBinaryPath)
+	if err != nil {
+		if err == wrapper.ErrBinaryNotFound {
+			log.Printf("[INFO] [internal,edge,stack] [message: docker-compose binary not found, falling back to libcompose]")
+			return libcompose.NewDockerComposeStackService(), nil
+		}
+	}
+
+	return service, nil
 }
